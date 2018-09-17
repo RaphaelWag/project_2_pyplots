@@ -16,7 +16,9 @@ for k in range(int(len(cpp_results) / 3)):
 
 print(gridpoints, cpp_runtime, cpp_rotations)
 
-for N in gridpoints: #number of gridpoints
+for n in gridpoints: #number of gridpoints
+
+    N = int(n)
 
     #Eigenvalues with full matrix
 
