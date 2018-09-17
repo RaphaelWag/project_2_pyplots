@@ -1,7 +1,14 @@
 #Author: Rapheal Wagner 16.09.2018
 
+#TODO:
+#stop time
+#plot cpp rotations
+#plot time of both
+#compute difference of python and cpp
+#plot difference
+#add unit tests
+
 import numpy as np
-import scipy as sc
 import matplotlib.pyplot as plt
 
 cpp_results = np.loadtxt("runtime_rotations_.txt")
