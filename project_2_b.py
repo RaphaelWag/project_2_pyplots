@@ -12,27 +12,25 @@ import time
 import matplotlib.pyplot as plt
 
 cpp_results = np.loadtxt("runtime_rotations_.txt")
-gridpoints = np.array([])
+gridpoints = np.array([],dtype=int)
 cpp_runtime = np.array([])
 cpp_rotations = np.array([])
 
 for k in range(int(len(cpp_results) / 3)):
-    gridpoints = np. append(gridpoints, cpp_results[k * 3])
+    gridpoints = np. append(gridpoints, int(cpp_results[k * 3]))
     cpp_runtime = np.append(cpp_runtime, cpp_results[(k * 3) + 1])
     cpp_rotations = np.append(cpp_rotations, cpp_results[(k * 3) + 2])
 
 python_runtime = np.array([])
 
-for n in gridpoints: #number of gridpoints
+for n in gridpoints:
 
-    N = int(n)
-
-    #Eigenvalues with full matrix
+    N = int(n)  #number of gridpoints
 
     A = np.zeros(shape=(N,N))
 
-    full_eigenvalues = np.zeros(shape=N)
-    full_eigenvectors = np.zeros(shape=(N,N))
+    eigenvalues = np.zeros(shape=N)
+    eigenvectors = np.zeros(shape=(N, N))
 
     for i in range(N):
         for j in range(N):
@@ -44,7 +42,7 @@ for n in gridpoints: #number of gridpoints
 
     start = time.time() #measures time in seconds
 
-    full_eigenvalues, full_eigenvectors = np.linalg.eigh(A)
+    eigenvalues, eigenvectors = np.linalg.eigh(A)
 
     end = time.time()
 
@@ -52,3 +50,18 @@ for n in gridpoints: #number of gridpoints
 
     python_runtime = np.append(python_runtime, runtime)
 
+readin = np.array([],dtype=str)
+
+for i in range(len(gridpoints)):
+    readin = np.append(readin,"eigenvalues"+str(gridpoints[i])+".txt")
+
+cpp_eigenvalues = np.zeros(shape=(int(len(gridpoints)),gridpoints[-1]))
+
+for i in range(int(len(gridpoints))):
+    temporary = np.loadtxt(readin[i])
+    for k in range(len(temporary)):
+        cpp_eigenvalues[i][k] = temporary[k]
+
+    cpp_eigenvalues[i].sort()
+
+print(cpp_eigenvalues)
