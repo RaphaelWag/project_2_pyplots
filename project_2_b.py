@@ -1,7 +1,6 @@
 #Author: Rapheal Wagner 16.09.2018
 
 #TODO:
-#stop time
 #plot cpp rotations
 #plot time of both
 #compute difference of python and cpp
@@ -9,6 +8,7 @@
 #add unit tests
 
 import numpy as np
+import time
 import matplotlib.pyplot as plt
 
 cpp_results = np.loadtxt("runtime_rotations_.txt")
@@ -21,7 +21,7 @@ for k in range(int(len(cpp_results) / 3)):
     cpp_runtime = np.append(cpp_runtime, cpp_results[(k * 3) + 1])
     cpp_rotations = np.append(cpp_rotations, cpp_results[(k * 3) + 2])
 
-print(gridpoints, cpp_runtime, cpp_rotations)
+python_runtime = np.array([])
 
 for n in gridpoints: #number of gridpoints
 
@@ -42,8 +42,13 @@ for n in gridpoints: #number of gridpoints
             if ((i==j+1)or(i==j-1)):
                 A[i][j] = 1
 
+    start = time.time() #measures time in seconds
+
     full_eigenvalues, full_eigenvectors = np.linalg.eigh(A)
 
-    print(full_eigenvalues,full_eigenvectors)
+    end = time.time()
 
+    runtime = end - start
+
+    python_runtime = np.append(python_runtime, runtime)
 
