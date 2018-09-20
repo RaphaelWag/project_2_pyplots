@@ -97,24 +97,57 @@ ax2.set_title("cpp rotations")
 
 plt.show()
 
-######################################
-### compare python and cpp results ###
-######################################
+###########################################################
+### compare python and cpp results with analytic results###
+###########################################################
 
-difference_array = np.zeros(shape=(len(gridpoints)))
-difference_matrix = np.zeros(shape=(len(gridpoints),len(gridpoints)))
+difference_cpp_pyhton_array = np.zeros(shape=(len(gridpoints)))
+difference_cpp_python_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
 
-difference_matrix = abs(python_eigenvalues-cpp_eigenvalues_sort)
+difference_cpp_analytic_array = np.zeros(shape=(len(gridpoints)))
+difference_cpp_analytic_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
+
+difference_python_analytic_array = np.zeros(shape=(len(gridpoints)))
+difference_python_analytic_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
+
+
+
+difference_cpp_python_matrix = abs(python_eigenvalues - cpp_eigenvalues_sort)
 
 for i in range(len(gridpoints)):
+
+    analytic_eigenvalues = np.zeros(shape=(gridpoints[i]))
+
     for j in range(gridpoints[i]):
-        difference_matrix[i][j] = difference_matrix[i][j] / abs(python_eigenvalues[i][j])
+        analytic_eigenvalues[j] = -2.0 + 2 * np.cos((j + 1) * np.pi / (gridpoints[i] + 1))
 
-    difference_array[i] = max(difference_matrix[i])
+    analytic_eigenvalues.sort()
 
-plt.plot(np.log10(gridpoints),np.log10(difference_array), "blue")
-plt.ylabel("log10(difference)")
-plt.xlabel("log10(gridpoints)")
-plt.title("Difference Python and cpp")
+    for j in range(gridpoints[i]):
 
+        difference_cpp_python_matrix[i][j] = difference_cpp_python_matrix[i][j] / abs(python_eigenvalues[i][j])
+        difference_cpp_analytic_matrix[i][j] = abs((cpp_eigenvalues_sort[i][j]-analytic_eigenvalues[j])/(analytic_eigenvalues[j]))
+        difference_python_analytic_matrix[i][j] = abs((python_eigenvalues[i][j]-analytic_eigenvalues[j])/(analytic_eigenvalues[j]))
+
+    difference_cpp_pyhton_array[i] = max(difference_cpp_python_matrix[i])
+    difference_cpp_analytic_array[i] = max(difference_cpp_analytic_matrix[i])
+    difference_python_analytic_array[i] = max(difference_python_analytic_matrix[i])
+
+f, (ax1, ax2, ax3) = plt.subplots(1, 3)
+
+ax1.plot(np.log10(gridpoints),np.log10(difference_python_analytic_array), "blue")
+ax1.set_ylabel("log10(difference)")
+ax1.set_xlabel("log10(gridpoints)")
+ax1.set_title("python-analytic")
+
+ax2.plot(np.log10(gridpoints), np.log10(difference_cpp_analytic_array), "blue")
+ax2.set_ylabel("log10(difference)")
+ax2.set_xlabel("log10(gridpoints)")
+ax2.set_title("cpp-analytic")
+
+
+ax3.plot(np.log10(gridpoints), np.log10(difference_cpp_pyhton_array), "blue")
+ax3.set_ylabel("log10(difference)")
+ax3.set_xlabel("log10(gridpoints)")
+ax3.set_title("cpp-python")
 plt.show()
