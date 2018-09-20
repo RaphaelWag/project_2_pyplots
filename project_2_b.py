@@ -9,6 +9,9 @@
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+#######################
+###Initialize Arrays###
+#######################
 
 cpp_results = np.loadtxt("runtime_rotations_.txt")
 gridpoints = np.array([],dtype=int)
@@ -19,6 +22,10 @@ for k in range(int(len(cpp_results) / 3)):
     gridpoints = np. append(gridpoints, int(cpp_results[k * 3]))
     cpp_runtime = np.append(cpp_runtime, cpp_results[(k * 3) + 1])
     cpp_rotations = np.append(cpp_rotations, cpp_results[(k * 3) + 2])
+
+##################################################
+### solve problem in python to compare results ###
+##################################################
 
 for n in gridpoints:
 
@@ -56,17 +63,19 @@ for i in range(len(gridpoints)):
     readin = np.append(readin,"eigenvalues"+str(gridpoints[i])+".txt")
 
 cpp_eigenvalues = np.zeros(shape=(int(len(gridpoints)),gridpoints[-1]))
+cpp_eigenvalues_sort = np.zeros(shape=(int(len(gridpoints)),gridpoints[-1]))
 
 for i in range(int(len(gridpoints))):
     temporary = np.loadtxt(readin[i])
     for k in range(len(temporary)):
         cpp_eigenvalues[i][k] = temporary[k]
 
-    #cpp_eigenvalues[i].sort()
+    cpp_eigenvalues_sort[i] = cpp_eigenvalues[i]
+    cpp_eigenvalues_sort[i].sort()
 
-##################################################
-### print runtime from ccp and python solution ###
-##################################################
+##############################
+### print runtime from ccp ###
+##############################
 
 f, (ax1, ax2) = plt.subplots(1, 2)
 
@@ -81,3 +90,15 @@ ax2.set_xlabel("log10(gridpoints)")
 ax2.set_title("cpp rotations")
 
 plt.show()
+
+######################################
+### compare python and cpp results ###
+######################################
+
+difference = np.zeros(shape=(len(gridpoints)))
+
+for i in range(len(gridpoints)):
+    for j in range(gridpoints[i]):
+
+
+
