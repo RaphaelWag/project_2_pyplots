@@ -23,9 +23,13 @@ for k in range(int(len(cpp_results) / 3)):
     cpp_runtime = np.append(cpp_runtime, cpp_results[(k * 3) + 1])
     cpp_rotations = np.append(cpp_rotations, cpp_results[(k * 3) + 2])
 
+python_eigenvalues = np.zeros(shape=(len(gridpoints),gridpoints[-1]))
+
 ##################################################
 ### solve problem in python to compare results ###
 ##################################################
+
+ii = 0 #loop variable
 
 for n in gridpoints:
 
@@ -51,7 +55,9 @@ for n in gridpoints:
 
     eigenvalues, eigenvectors = np.linalg.eigh(A) #solve eigenvalue problem
 
-    end = time.time()
+    for j in range(N):
+        python_eigenvalues[ii][j] = eigenvalues[j]
+    ii += 1
 
 ##################################
 ### Read in data from cpp code ###
@@ -80,7 +86,7 @@ for i in range(int(len(gridpoints))):
 f, (ax1, ax2) = plt.subplots(1, 2)
 
 ax1.plot(np.log10(gridpoints),cpp_runtime, "blue")
-ax1.set_ylabel("log10(runtime)")
+ax1.set_ylabel("log10( runtime / nanoseconds )")
 ax1.set_xlabel("log10(gridpoints)")
 ax1.set_title("cpp runtime")
 
@@ -95,10 +101,20 @@ plt.show()
 ### compare python and cpp results ###
 ######################################
 
-difference = np.zeros(shape=(len(gridpoints)))
+difference_array = np.zeros(shape=(len(gridpoints)))
+difference_matrix = np.zeros(shape=(len(gridpoints),len(gridpoints)))
+
+difference_matrix = abs(python_eigenvalues-cpp_eigenvalues_sort)
 
 for i in range(len(gridpoints)):
     for j in range(gridpoints[i]):
+        difference_matrix[i][j] = difference_matrix[i][j] / abs(python_eigenvalues[i][j])
 
+    difference_array[i] = max(difference_matrix[i])
 
+plt.plot(np.log10(gridpoints),np.log10(difference_array), "blue")
+plt.ylabel("log10(difference)")
+plt.xlabel("log10(gridpoints)")
+plt.title("Difference Python and cpp")
 
+plt.show()
