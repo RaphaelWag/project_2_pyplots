@@ -1,14 +1,8 @@
 #Author: Rapheal Wagner 16.09.2018
 
-#TODO:
-#plot cpp rotations
-#plot time of both
-#compute difference of python and cpp
-#plot difference
-
 import numpy as np
-import time
 import matplotlib.pyplot as plt
+
 #######################
 ###Initialize Arrays###
 #######################
@@ -37,7 +31,7 @@ for n in gridpoints:
 
     #initialize arrays
 
-    A = np.zeros(shape=(N,N))
+    A = np.zeros(shape=(N, N))
 
     eigenvalues = np.zeros(shape=N)
     eigenvectors = np.zeros(shape=(N, N))
@@ -85,7 +79,7 @@ for i in range(int(len(gridpoints))):
 
 f, (ax1, ax2) = plt.subplots(1, 2)
 
-ax1.plot(np.log10(gridpoints),cpp_runtime, "blue")
+ax1.plot(np.log10(gridpoints), cpp_runtime, "blue")
 ax1.set_ylabel("log10( runtime / nanoseconds )")
 ax1.set_xlabel("log10(gridpoints)")
 ax1.set_title("cpp runtime")
@@ -101,18 +95,11 @@ plt.show()
 ### compare python and cpp results with analytic results###
 ###########################################################
 
-difference_cpp_pyhton_array = np.zeros(shape=(len(gridpoints)))
-difference_cpp_python_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
-
 difference_cpp_analytic_array = np.zeros(shape=(len(gridpoints)))
 difference_cpp_analytic_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
 
 difference_python_analytic_array = np.zeros(shape=(len(gridpoints)))
 difference_python_analytic_matrix = np.zeros(shape=(len(gridpoints), gridpoints[-1]))
-
-
-
-difference_cpp_python_matrix = abs(python_eigenvalues - cpp_eigenvalues_sort)
 
 for i in range(len(gridpoints)):
 
@@ -125,13 +112,16 @@ for i in range(len(gridpoints)):
 
     for j in range(gridpoints[i]):
 
-        difference_cpp_python_matrix[i][j] = difference_cpp_python_matrix[i][j] / abs(python_eigenvalues[i][j])
         difference_cpp_analytic_matrix[i][j] = abs((cpp_eigenvalues_sort[i][j]-analytic_eigenvalues[j])/(analytic_eigenvalues[j]))
         difference_python_analytic_matrix[i][j] = abs((python_eigenvalues[i][j]-analytic_eigenvalues[j])/(analytic_eigenvalues[j]))
 
-    difference_cpp_pyhton_array[i] = max(difference_cpp_python_matrix[i])
     difference_cpp_analytic_array[i] = max(difference_cpp_analytic_matrix[i])
     difference_python_analytic_array[i] = max(difference_python_analytic_matrix[i])
+
+##########################################################################
+### create plots to visualize the difference of python and cpp results ###
+##########################################################################
+
 
 f, (ax1, ax2) = plt.subplots(1, 2)
 
